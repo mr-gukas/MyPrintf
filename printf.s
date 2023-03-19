@@ -3,6 +3,7 @@
 ;
 ;
 
+
 section .text 
 
 global _printf, gukasPrintf
