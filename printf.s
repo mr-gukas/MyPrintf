@@ -6,22 +6,21 @@
 
 section .text 
 
-global _printf, gukasPrintf
+global _start, mr_printf, gukasPrintf
 
-%if 0
 
 _start:
-    mov rdx, 0x6f 
-;    mov rsi, tmp_str 
+    mov r9, 'u'
+    push r9
+
+    mov r9,  18
+    mov r8,  18
+    mov rcx, 18
+    mov rdx, 18
+    mov rsi, name   
     mov rdi, msg
     
-    push rdx 
-;    push rsi
-    push rdi
-    
-    mov rbp, rsp
-
-    call _printf
+    call gukasPrintf
 
     mov rax, 0x3c
     xor rdi, rdi 
@@ -30,9 +29,8 @@ _start:
 
 section .data 
 
-tmp_str db "hello world", 0x00
-msg     db "i can say: in oct %c is: %t", 0x0a, 0x0d, 0x00
-%endif
+name db "Gukas", 0x00
+msg     db "I'm %s, I'm %d y.o, in hex: %x, in oct: %o, in bin: %b, i love %c, and can do %% and %z", 0x0a, 0x0d, 0x00
 
 section .text    
 ;==============================================================================
@@ -119,7 +117,7 @@ gukasPrintf:
         mov rbp, rsp    
         add rbp, 8      ; set rbp on ret addr
         
-        call _printf
+        call mr_printf
 
         pop rbp         ; return rbp to old value
         add rsp, 8*6    ; return rsp to old value
@@ -139,7 +137,7 @@ gukasPrintf:
 
 ; DESTROY: rax, rcx
 ;==============================================================================
-_printf: 
+mr_printf: 
         mov rsi, [rbp]
         mov rdi, printfBuf
         mov rbx, 0
