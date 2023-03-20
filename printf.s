@@ -1,14 +1,11 @@
 ; nasm -f elf64 -l printf.lst printf.s
 ; ld -s -o printf printf.o 
-;
-;
-
 
 section .text 
 
 global _start, mr_printf, gukasPrintf
 
-
+%if 0
 _start:
     mov r9, 'u'
     push r9
@@ -31,6 +28,8 @@ section .data
 
 name db "Gukas", 0x00
 msg     db "I'm %s, I'm %d y.o, in hex: %x, in oct: %o, in bin: %b, i love %c, and can do %% and %z", 0x0a, 0x0d, 0x00
+
+%endif
 
 section .text    
 ;==============================================================================
@@ -332,7 +331,21 @@ itoa:
 ; DESTROY: r8, r9, rdx
 ;==============================================================================
 itoa10:
+
         xor r12, r12
+%if 1
+        cmp edx, 0
+        jge .next
+
+.negative:
+        mov byte [rdi], '-' 
+        inc rdi
+        inc r12
+
+        neg edx
+%endif 
+
+.next:
         mov r8, rdx
         mov rax, rdx 
         mov r9, 0x0a
@@ -367,7 +380,7 @@ itoa10:
         ret
 ;==============================================================================
 
-section .data
+section .rodata
 
 switch_table:
     dq b_bin
